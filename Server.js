@@ -24,11 +24,12 @@ MongoClient.connect(url, function(err, db) {
 			}
 		});
 		if (!isExsit) {
-			dbo.collection(tableName).insertOne(myobj, function(err, res) {
-				if (err) throw err;
-				console.log("Đã thêm vào 1 cái lồn gì đó đéo biết???");
-				db.close();
-			});
+            myobj.forEach(item => {
+                dbo.collection(tableName).insertOne(item, function(err, res) {
+                    if (err) throw err;
+                    console.log("Đã thêm vào 1 cái lồn gì đó");
+                });
+            });
 		}
     });
 });
@@ -52,4 +53,37 @@ app.get('/student/:id', function(req, res) {
 		}
 	})
 });
+app.get('/students', function(req, res) {
+	dbo.collection(tableName).findOne({}, function(err, result) {
+        if (err) {
+			res.json({status: 500, message: "Internal Server", data: err});
+		} else {
+			res.json({status: 200, message: "SUCCESS", data: result});
+		}
+	})
+});
+app.post('/student', function(req, response) {
+	dbo.collection(tableName).findOne({mssv: req.body.mssv}, function(err, result) {
+        if (result) {
+            response.json({status: 200, message: "SUCCESS", data: "MSSV đã có ròi"});
+        } else {
+            dbo.collection(tableName).insertOne(req.body, function(err, res) {
+                if (err) {
+                    response.json({status: 500, message: "Internal Server", data: err});
+                } else {
+                    response.json({status: 200, message: "SUCCESS", data: res});
+                }
+            });
+        }
+    });
+});
+app.delete('/student/:id', function(req, response) {
+	dbo.collection(tableName).deleteOne({mssv: req.params.id}, function(err, result) {
+        if (err) {
+			response.json({status: 500, message: "Internal Server", data: err});
+		} else {
+			response.json({status: 200, message: "SUCCESS", data: result});
+		}
+	})
+})
 app.listen(3000);

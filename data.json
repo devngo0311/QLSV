@@ -1,8 +1,26 @@
-{
-    "mssv": "17047951",
+[
+  {
+    "mssv": "1",
     "first_name": "Phong",
-    "last_name": "Phan",
+    "last_name": "Lồn",
     "birthday": "17/03/1999",
     "sex": "Nam",
     "class": "DHCNTT13A"
-}
+  },
+  {
+    "mssv": "2",
+    "first_name": "Tú",
+    "last_name": "Wibu",
+    "birthday": "22/07/1999",
+    "sex": "Nam",
+    "class": "DHCNTT13A"
+  },
+  {
+    "mssv": "3",
+    "first_name": "Minh",
+    "last_name": "kặc",
+    "birthday": "18/03/1999",
+    "sex": "Nam",
+    "class": "DHCNTT13A"
+  }
+]
