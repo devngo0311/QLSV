@@ -1,78 +1,55 @@
 var MongoClient = require('mongodb').MongoClient;
+const myDbName = "qlsvDatabase";
+const tableName = "students";
 var url = "mongodb://localhost:27017/";
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/my_db');
+mongoose.connect('mongodb://localhost:27017/'+ myDbName);
 var express = require('express');
 var app = express();
 const str = require('./data.json');
+app.use(express.json())
+var dbo = null;
 
 //Insert Document
 MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db("mydb");
+    dbo = db.db(myDbName);
     var myobj = JSON.parse(JSON.stringify(str));
-    dbo.collection("Students").insertOne(myobj, function(err, res) {
-        if (err) throw err;
-        console.log("1 document inserted");
-        db.close();
+    dbo.admin().listDatabases().then(listDB => {
+		let isExsit = false;
+		listDB.databases.forEach((object) => {
+			if (object.name === myDbName) {
+				console.log("Vãi lồn luôn có rồi mà???");
+				isExsit = true;
+			}
+		});
+		if (!isExsit) {
+			dbo.collection(tableName).insertOne(myobj, function(err, res) {
+				if (err) throw err;
+				console.log("Đã thêm vào 1 cái lồn gì đó đéo biết???");
+				db.close();
+			});
+		}
     });
 });
 
 //Create Model
 var StudentSchema = mongoose.Schema({
-    id: String,
-    fname: String,
-    lname: String,
-    Birthday: Date,
-    Sex: String,
-    Class: String
+    mssv: String,
+    fist_name: String,
+    last_name: String,
+    birthday: Date,
+    sex: String,
+    class: String
 });
-var Student = mongoose.model("Student", StudentSchema);
-//ODM
-app.post('/addStudent', function(req, res) {
-    // First read existing student.
-    fs.readFile(__dirname + "/" + "data.json", 'utf8', function(err, data) {
-        data = JSON.parse(data);
-        var idStudent = req.query.idStudent;
-        var fname = req.query.fname;
-        var lname = req.query.lname;
-        var Birthday = req.query.Birthday;
-        var Sex = req.query.Sex;
-        var Class = req.query.Class;
-        var student4 = {
-            "idStudent": "17047951",
-            "fname": "Phong",
-            "lname": "Phan",
-            "Birthday": "17/03/1999",
-            "Sex": "Nam",
-            "class": "DHCNTT13A"
-        }
-        data["student4"] = student["student4"];
-        console.log(data);
-        res.end(JSON.stringify(data));
-    });
+var Student = mongoose.model(tableName, StudentSchema);
+app.get('/student/:id', function(req, res) {
+	dbo.collection(tableName).findOne({mssv: req.params.id}, function(err, result) {
+        if (err) {
+			res.json({status: 500, message: "Internal Server", data: err});
+		} else {
+			res.json({status: 200, message: "SUCCESS", data: result});
+		}
+	})
 });
-//Update 
-app.put('/student/update/:id', function(req, res) {
-    Student.findOne({ idStudent: req.params.id }, { fname: "Phong" }, function(err, response) {
-        if (err) res.json({ message: "Error in updating person with id " + req.params.id });
-        res.json(response);
-    });
-});
-//find student with id student and output name
-app.get('/student/find/:id', function(req, res) {
-    console.log(req.params.id);
-    Student.findOne({ idStudent: req.params.id }, function(err, response) {
-        console.log(response);
-        res.send(response);
-    });
-});
-//delete student with id
-app.delete('/student/delete/:id', function(req, res) {
-
-    Student.findOne({ idStudent: req.params.id }, function(err, response) {
-        if (err) res.json({ message: "Error in deleting record id " + req.params.id });
-        else res.json({ message: "Person with id " + req.params.id + " removed." });
-    });
-});
-app.listen(8080);
+app.listen(3000);

@@ -1,8 +1,8 @@
 {
-    "idStudent": "17047951",
-    "fname": "Phong",
-    "lname": "Phan",
-    "Birthday": "17/03/1999",
-    "Sex": "Nam",
+    "mssv": "17047951",
+    "first_name": "Phong",
+    "last_name": "Phan",
+    "birthday": "17/03/1999",
+    "sex": "Nam",
     "class": "DHCNTT13A"
 }
