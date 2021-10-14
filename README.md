@@ -8,6 +8,7 @@ Viết Ứng dụng Quản Lý Danh Sách Sinh Viên. Hãy thực hiện các y�
 **Start project:**
 -   `npm i`
 -   `npm run start:dev`
+
 **Environtment**
 -   `dotenv - ^10.0.0`
 -   `express - ^4.17.1`
